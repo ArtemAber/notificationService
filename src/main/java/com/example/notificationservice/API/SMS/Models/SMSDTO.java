@@ -1,26 +1,22 @@
 package com.example.notificationservice.API.SMS.Models;
 
-import org.apache.tomcat.util.json.ParseException;
-import org.json.JSONObject;
+import java.util.Date;
 
-public class SMSModel {
+public class SMSDTO {
 
     private String numbers;
 
     private String message;
 
-    public SMSModel() {
+    private Date async;
+
+    public SMSDTO() {
     }
 
-    public SMSModel(String numbers, String message) {
+    public SMSDTO(String numbers, String message, Date async) {
         this.numbers = numbers;
         this.message = message;
-    }
-
-    public SMSModel(String data) throws ParseException {
-        JSONObject obj = new JSONObject(data);
-        this.numbers = obj.getString("numbers");
-        this.message = obj.getString("message");
+        this.async = async;
     }
 
     public String getNumbers() {
@@ -39,9 +35,20 @@ public class SMSModel {
         this.message = message;
     }
 
+    public Date getAsync() {
+        return async;
+    }
+
+    public void setAsync(Date async) {
+        this.async = async;
+    }
+
     @Override
     public String toString() {
-        return "{\"numbers\": \"" + numbers +
-                "\", \"message\": \"" + message + "\"}";
+        return "SMSDTO{" +
+                "numbers='" + numbers + '\'' +
+                ", message='" + message + '\'' +
+                ", async=" + async +
+                '}';
     }
 }

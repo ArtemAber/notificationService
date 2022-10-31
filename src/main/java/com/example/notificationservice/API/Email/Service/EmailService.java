@@ -30,11 +30,11 @@ public class EmailService {
         this.notificationHibernateService = notificationHibernateService;
     }
 
-    public String saveSimpleMail(EmailModel emailModel, NotificationType type) {
+    public String saveMail(EmailModel emailModel, NotificationType type) {
         NotificationModel notificationModel = new NotificationModel(type, emailModel.toString());
         notificationModel.setCreatedAt(new Date());
         notificationModel.setStatus(StatusType.PROCESSING);
-        return emailModel.getPictures() == null || emailModel.getFiles() == null ? this.sendSimpleMail(emailModel, notificationModel) : this.sendMailWithAttachment(emailModel, notificationModel);
+        return emailModel.getPictures() == null && emailModel.getFiles() == null ? this.sendSimpleMail(emailModel, notificationModel) : this.sendMailWithAttachment(emailModel, notificationModel);
     }
 
     public String sendMailWithAttachment(EmailModel emailModel, NotificationModel notificationModel) {
@@ -47,7 +47,7 @@ public class EmailService {
             messageHelper.setText(emailModel.getDescription());
             if (emailModel.getPictures() != null) {
                 for (PictureModel pictureModel: emailModel.getPictures()) {
-                    messageHelper.setText("<html><body><img src=\"" + pictureModel.getData() + "\"></body></html>", true);
+                    messageHelper.setText("<html><body><img src=\"data:image/png;base64," + pictureModel.getData() + "\"></body></html>", true);
                 }
             }
 

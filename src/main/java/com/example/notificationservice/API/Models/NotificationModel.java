@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Notification")
+@Table(name = "notification")
 public class NotificationModel {
 
     @Id
@@ -19,11 +19,11 @@ public class NotificationModel {
     @Column(name = "data")
     private String data;
 
-    @Column(name = "created_At")
+    @Column(name = "created_at")
     @Temporal(TemporalType.DATE)
     private Date createdAt;
 
-    @Column(name = "send_Date")
+    @Column(name = "send_date")
     @Temporal(TemporalType.DATE)
     private Date sendDate;
 

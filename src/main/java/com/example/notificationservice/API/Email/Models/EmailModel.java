@@ -2,7 +2,12 @@ package com.example.notificationservice.API.Email.Models;
 
 import com.example.notificationservice.API.Models.FileModel;
 import com.example.notificationservice.API.Models.PictureModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import org.apache.tomcat.util.json.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.validation.constraints.Email;
 
@@ -38,6 +43,35 @@ public class EmailModel {
         this.title = title;
         this.description = description;
         this.signature = signature;
+    }
+
+    public EmailModel(String data) throws ParseException {
+        JSONObject obj = new JSONObject(data);
+
+        this.email = obj.getString("email");
+        this.title = obj.getString("title");
+        this.description = obj.getString("description");
+        this.signature = obj.getString("signature");
+
+        if (obj.has("files")) {
+            JSONArray filesArrayObj = obj.getJSONArray("files");
+            this.files = new ArrayList<>();
+            Iterator fileIter = filesArrayObj.iterator();
+            while (fileIter.hasNext()) {
+                JSONObject file = (JSONObject) fileIter.next();
+                this.files.add(new FileModel(file.getString("name"), file.getString("data")));
+            }
+        }
+
+        if (obj.has("pictures")) {
+            JSONArray pictureArray = obj.getJSONArray("pictures");
+            this.pictures = new ArrayList<>();
+            Iterator pictureIter = pictureArray.iterator();
+            while (pictureIter.hasNext()) {
+                JSONObject picture = (JSONObject) pictureIter.next();
+                this.pictures.add(new PictureModel(picture.getString("name"), picture.getString("data")));
+            }
+        }
     }
 
     public String getEmail() {
@@ -89,7 +123,10 @@ public class EmailModel {
     }
 
     public String toString() {
-        String var10000 = this.email;
-        return "EmailModel{recipient='" + var10000 + "', title='" + this.title + "', description='" + this.description + "', files=" + this.files.toString() + ", picture='" + this.pictures + "', signature='" + this.signature + "'}";
+        return "{\"email\": \"" + this.email + "\", \"title\": \"" + this.title + "\", " +
+                "\"description\": \"" + this.description + "\"," +
+                " \"files\": " + this.files + ", " +
+                "\"pictures\": " + this.pictures + ", " +
+                "\"signature\": \"" + this.signature + "\"}";
     }
 }

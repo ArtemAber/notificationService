@@ -29,9 +29,6 @@ public class FileModel {
 
     @Override
     public String toString() {
-        return "FileModel{" +
-                "name='" + name + '\'' +
-                ", data='" + data + '\'' +
-                '}';
+        return "{\"name\": \"" + name + "\", \"data\": \"" + data + "\"}";
     }
 }

@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
     <changeSet id="create-table-notification" author="Artem-Sokolov">
-        <createTable tableName="Notification">
+        <createTable tableName="notification">
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
             </column>
@@ -13,9 +13,9 @@
             </column>
             <column name="data" type="text">
             </column>
-            <column name="created_At" type="timestamp">
+            <column name="created_at" type="timestamp">
             </column>
-            <column name="send_Date" type="timestamp">
+            <column name="send_date" type="timestamp">
             </column>
             <column name="status" type="varchar(100)">
             </column>

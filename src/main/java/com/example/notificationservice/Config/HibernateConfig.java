@@ -53,10 +53,10 @@ public class HibernateConfig {
         return sessionFactory;
     }
 
-//    @Bean
-//    public JpaTransactionManager transactionManager() {
-//        JpaTransactionManager transactionManager = new JpaTransactionManager();
-//        transactionManager.setEntityManagerFactory(sessionFactory());
-//        return transactionManager;
-//    }
+    @Bean
+    public JpaTransactionManager transactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(sessionFactory().getObject());
+        return transactionManager;
+    }
 }

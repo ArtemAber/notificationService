@@ -29,9 +29,6 @@ public class PictureModel {
 
     @Override
     public String toString() {
-        return "PictureModel{" +
-                "name='" + name + '\'' +
-                ", data='" + data + '\'' +
-                '}';
+        return "{\"name\": \"" + name + "\", \"data\": \"" + data + "\"}";
     }
 }

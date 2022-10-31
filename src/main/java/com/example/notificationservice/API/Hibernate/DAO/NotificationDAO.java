@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class NotificationDAO {
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     @Autowired
     public NotificationDAO(SessionFactory sessionFactory) {
