@@ -3,6 +3,7 @@ package com.example.notificationservice.API.Email.Models;
 import com.example.notificationservice.API.Models.FileModel;
 import com.example.notificationservice.API.Models.PictureModel;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.Email;
@@ -22,12 +23,12 @@ public class EmailDTO {
 
     private String signature;
 
-    private Date async;
+    private LocalDateTime async;
 
     public EmailDTO() {
     }
 
-    public EmailDTO(String email, String title, String description, List<FileModel> files, List<PictureModel> pictures, String signature, Date async) {
+    public EmailDTO(String email, String title, String description, List<FileModel> files, List<PictureModel> pictures, String signature, LocalDateTime async) {
         this.email = email;
         this.title = title;
         this.description = description;
@@ -37,7 +38,7 @@ public class EmailDTO {
         this.async = async;
     }
 
-    public EmailDTO(String email, String title, String description, String signature, Date async) {
+    public EmailDTO(String email, String title, String description, String signature, LocalDateTime async) {
         this.email = email;
         this.title = title;
         this.description = description;
@@ -93,11 +94,11 @@ public class EmailDTO {
         this.signature = signature;
     }
 
-    public Date getAsync() {
+    public LocalDateTime getAsync() {
         return async;
     }
 
-    public void setAsync(Date async) {
+    public void setAsync(LocalDateTime async) {
         this.async = async;
     }
 

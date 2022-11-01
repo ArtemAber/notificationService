@@ -40,9 +40,9 @@ public class TelegramController {
 
     @PostMapping("/sendAsyncMessage")
     public void sendAsyncMessage(@RequestBody TelegramDTO telegramDTO) {
-        Date date = telegramDTO.getAsync();
-        date.setHours(date.getHours() - 3);
-        taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_TELEGRAM, convertToTelegramModel(telegramDTO).toString(), date));
+//        Date date = telegramDTO.getAsync();
+//        date.setHours(date.getHours() - 3);
+        taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_TELEGRAM, convertToTelegramModel(telegramDTO).toString(), telegramDTO.getAsync()));
     }
 
     private TelegramModel convertToTelegramModel(TelegramDTO telegramDTO) {

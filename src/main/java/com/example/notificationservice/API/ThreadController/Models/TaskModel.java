@@ -4,6 +4,7 @@ package com.example.notificationservice.API.ThreadController.Models;
 import com.example.notificationservice.API.Models.NotificationType;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -23,12 +24,12 @@ public class TaskModel {
     private String data;
 
     @Column(name = "planedDate")
-    private Date planedDate;
+    private LocalDateTime planedDate;
 
     public TaskModel() {
     }
 
-    public TaskModel(NotificationType type, String data, Date planedDate) {
+    public TaskModel(NotificationType type, String data, LocalDateTime planedDate) {
         this.id = UUID.randomUUID();
         this.type = type;
         this.data = data;
@@ -59,11 +60,11 @@ public class TaskModel {
         this.data = data;
     }
 
-    public Date getPlanedDate() {
+    public LocalDateTime getPlanedDate() {
         return planedDate;
     }
 
-    public void setPlanedDate(Date planedDate) {
+    public void setPlanedDate(LocalDateTime planedDate) {
         this.planedDate = planedDate;
     }
 

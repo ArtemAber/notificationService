@@ -1,5 +1,6 @@
 package com.example.notificationservice.API.SMS.Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class SMSDTO {
@@ -8,12 +9,12 @@ public class SMSDTO {
 
     private String message;
 
-    private Date async;
+    private LocalDateTime async;
 
     public SMSDTO() {
     }
 
-    public SMSDTO(String numbers, String message, Date async) {
+    public SMSDTO(String numbers, String message, LocalDateTime async) {
         this.numbers = numbers;
         this.message = message;
         this.async = async;
@@ -35,11 +36,11 @@ public class SMSDTO {
         this.message = message;
     }
 
-    public Date getAsync() {
+    public LocalDateTime getAsync() {
         return async;
     }
 
-    public void setAsync(Date async) {
+    public void setAsync(LocalDateTime async) {
         this.async = async;
     }
 

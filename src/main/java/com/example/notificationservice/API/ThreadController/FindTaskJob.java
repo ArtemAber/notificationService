@@ -13,6 +13,7 @@ import org.apache.tomcat.util.json.ParseException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class FindTaskJob {
     public void findTask() {
         if (taskHibernateService.getAllTask() != null) {
             for (TaskModel taskModel : taskHibernateService.getAllTask()) {
-                if (taskModel.getPlanedDate().before(new Date())) {
+                if (taskModel.getPlanedDate().isBefore(LocalDateTime.now())) {
                     if (taskModel.getType() == NotificationType.NOTIFICATION_TELEGRAM) {
                         executeTelegramTask(taskModel);
                     } else if (taskModel.getType() == NotificationType.NOTIFICATION_EMAIL) {

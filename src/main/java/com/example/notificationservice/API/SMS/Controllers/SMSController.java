@@ -50,9 +50,9 @@ public class SMSController {
         if (bindingResult.hasErrors()) {
             answer = bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage();
         } else {
-            Date date = smsdto.getAsync();
-            date.setHours(date.getHours() - 3);
-            taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_SMS, convertToSMSModel(smsdto).toString(), date));
+//            Date date = smsdto.getAsync();
+//            date.setHours(date.getHours() - 3);
+            taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_SMS, convertToSMSModel(smsdto).toString(), smsdto.getAsync()));
         }
     }
 

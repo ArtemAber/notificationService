@@ -63,9 +63,9 @@ public class EmailController {
         if (bindingResult.hasErrors()) {
             answer = (bindingResult.getAllErrors().stream().findAny().get()).getDefaultMessage();
         } else {
-            Date date = emailDTO.getAsync();
-            date.setHours(date.getHours() - 3);
-            taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_EMAIL, convertToEmailModel(emailDTO).toString(), date));
+//            Date date = emailDTO.getAsync();
+//            date.setHours(date.getHours() - 3);
+            taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_EMAIL, convertToEmailModel(emailDTO).toString(), emailDTO.getAsync()));
         }
         return answer;
     }

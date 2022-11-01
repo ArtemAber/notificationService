@@ -3,6 +3,7 @@ package com.example.notificationservice.API.Telegram.Models;
 import com.example.notificationservice.API.Models.FileModel;
 import com.example.notificationservice.API.Models.PictureModel;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,22 +17,24 @@ public class TelegramDTO {
 
     private String chatId;
 
-    private Date async;
+    private LocalDateTime async;
 
     public TelegramDTO() {
     }
 
-    public TelegramDTO(String message, List<FileModel> files, List<PictureModel> pictures, String chatId, Date async) {
+    public TelegramDTO(String message, List<FileModel> files, List<PictureModel> pictures, String chatId, LocalDateTime async) {
         this.message = message;
         this.files = files;
         this.pictures = pictures;
         this.chatId = chatId;
+        this.async = async;
     }
 
-    public TelegramDTO(String message, String chatId, List<PictureModel> pictures, Date async) {
+    public TelegramDTO(String message, String chatId, List<PictureModel> pictures, LocalDateTime async) {
         this.message = message;
         this.chatId = chatId;
         this.pictures = pictures;
+        this.async = async;
     }
 
     public String getMessage() {
@@ -66,11 +69,11 @@ public class TelegramDTO {
         this.chatId = chatId;
     }
 
-    public Date getAsync() {
+    public LocalDateTime getAsync() {
         return async;
     }
 
-    public void setAsync(Date async) {
+    public void setAsync(LocalDateTime async) {
         this.async = async;
     }
 
