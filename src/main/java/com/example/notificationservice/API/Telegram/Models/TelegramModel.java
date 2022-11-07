@@ -2,12 +2,6 @@ package com.example.notificationservice.API.Telegram.Models;
 
 import com.example.notificationservice.API.Models.FileModel;
 import com.example.notificationservice.API.Models.PictureModel;
-import org.apache.tomcat.util.json.ParseException;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class TelegramModel {
@@ -34,29 +28,6 @@ public class TelegramModel {
         this.message = message;
         this.chatId = chatId;
         this.pictures = pictures;
-    }
-
-    public TelegramModel(String datas1) throws ParseException {
-        JSONObject obj = new JSONObject(datas1);
-
-        this.message = obj.getString("message");
-        this.chatId = obj.getString("chatId");
-
-        JSONArray filesArray = obj.getJSONArray("files");
-        this.files = new ArrayList<>();
-        Iterator fileIter = filesArray.iterator();
-        while(fileIter.hasNext()) {
-           JSONObject file = (JSONObject) fileIter.next();
-           this.files.add(new FileModel(file.getString("name"), file.getString("data")));
-        }
-
-        JSONArray pictureArray = obj.getJSONArray("pictures");
-        this.pictures = new ArrayList<>();
-        Iterator pictureIter = pictureArray.iterator();
-        while (pictureIter.hasNext()) {
-            JSONObject picture = (JSONObject) pictureIter.next();
-            this.pictures.add(new PictureModel(picture.getString("name"), picture.getString("data")));
-        }
     }
 
     public String getMessage() {
@@ -89,13 +60,5 @@ public class TelegramModel {
 
     public void setChatId(String chatId) {
         this.chatId = chatId;
-    }
-
-    @Override
-    public String toString() {
-        return "{\"message\": \"" + message + "\", " +
-                "\"files\": " + files + ", " +
-                "\"pictures\": " + pictures + ", " +
-                "\"chatId\": \"" + chatId + "\"}";
     }
 }

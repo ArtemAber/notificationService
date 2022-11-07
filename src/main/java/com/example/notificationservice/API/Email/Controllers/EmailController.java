@@ -1,24 +1,21 @@
 package com.example.notificationservice.API.Email.Controllers;
 
-import com.example.notificationservice.API.Email.Models.EmailDTO;
+import com.example.notificationservice.API.Email.Models.EmailAsyncModel;
 import com.example.notificationservice.API.Email.Models.EmailModel;
 import com.example.notificationservice.API.Email.Service.EmailService;
-import com.example.notificationservice.API.Hibernate.service.TaskHibernateService;
-import com.example.notificationservice.API.Models.NotificationType;
-import com.example.notificationservice.API.ThreadController.Models.TaskModel;
+import com.example.notificationservice.API.Models.GuidResultModel;
+import com.example.notificationservice.API.Models.SuccessResultModel;
 import com.example.notificationservice.API.util.EmailModelValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
 
 @RestController
 @RequestMapping({"/regularAd"})
@@ -27,50 +24,33 @@ import java.util.Date;
         description = "Отправляет письма на почту"
 )
 public class EmailController {
-    private final EmailService emailService;
-    private final EmailModelValidator emailModelValidator;
-    private final ModelMapper modelMapper;
-    private final TaskHibernateService taskHibernateService;
 
-    @Autowired
-    public EmailController(EmailService emailService, EmailModelValidator emailModelValidator, ModelMapper modelMapper, TaskHibernateService taskHibernateService) {
-        this.emailService = emailService;
-        this.emailModelValidator = emailModelValidator;
-        this.modelMapper = modelMapper;
-        this.taskHibernateService = taskHibernateService;
-    }
+    @Inject
+    private EmailService emailService;
+
+    @Inject
+    private EmailModelValidator emailModelValidator;
+
 
     @PostMapping({"/send"})
-    public String sendAd(@RequestBody @Valid EmailDTO emailDTO, BindingResult bindingResult) {
-        this.emailModelValidator.validate(emailDTO, bindingResult);
-
-        String answer = "ответ не пришёл";
+    public GuidResultModel sendAd(@RequestBody @Valid EmailModel emailModel, BindingResult bindingResult) {
+        this.emailModelValidator.validate(emailModel, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            answer = (bindingResult.getAllErrors().stream().findAny().get()).getDefaultMessage();
+             return new GuidResultModel(null, "DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
-                answer = emailService.saveMail(convertToEmailModel(emailDTO), NotificationType.NOTIFICATION_EMAIL);
+                return emailService.sendMail(emailModel);
         }
-        return answer;
     }
 
     @PostMapping("/sendAsyncEmail")
-    public String sendAdAsync(@RequestBody @Valid EmailDTO emailDTO, BindingResult bindingResult) {
-        this.emailModelValidator.validate(emailDTO, bindingResult);
-
-        String answer = "Сообщение принято";
+    public GuidResultModel sendAdAsync(@RequestBody EmailAsyncModel emailAsyncModel, BindingResult bindingResult) {
+        this.emailModelValidator.validate(emailAsyncModel, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            answer = (bindingResult.getAllErrors().stream().findAny().get()).getDefaultMessage();
+            return new GuidResultModel(null, "DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
-//            Date date = emailDTO.getAsync();
-//            date.setHours(date.getHours() - 3);
-            taskHibernateService.saveTask(new TaskModel(NotificationType.NOTIFICATION_EMAIL, convertToEmailModel(emailDTO).toString(), emailDTO.getAsync()));
+            return emailService.sendAdAsync(emailAsyncModel);
         }
-        return answer;
-    }
-
-    private EmailModel convertToEmailModel(EmailDTO emailDTO) {
-        return modelMapper.map(emailDTO, EmailModel.class);
     }
 }

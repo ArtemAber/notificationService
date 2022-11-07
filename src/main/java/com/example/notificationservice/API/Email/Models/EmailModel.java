@@ -14,17 +14,17 @@ import javax.validation.constraints.Email;
 public class EmailModel {
 
     @Email(message = "поле recipient должно быть валидным email")
-    private String email;
+    protected String email;
 
-    private String title;
+    protected String title;
 
-    private String description;
+    protected String description;
 
-    private List<FileModel> files;
+    protected List<FileModel> files;
 
-    private List<PictureModel> pictures;
+    protected List<PictureModel> pictures;
 
-    private String signature;
+    protected String signature;
 
     public EmailModel() {
     }
@@ -120,13 +120,5 @@ public class EmailModel {
 
     public void setSignature(String signature) {
         this.signature = signature;
-    }
-
-    public String toString() {
-        return "{\"email\": \"" + this.email + "\", \"title\": \"" + this.title + "\", " +
-                "\"description\": \"" + this.description + "\"," +
-                " \"files\": " + this.files + ", " +
-                "\"pictures\": " + this.pictures + ", " +
-                "\"signature\": \"" + this.signature + "\"}";
     }
 }

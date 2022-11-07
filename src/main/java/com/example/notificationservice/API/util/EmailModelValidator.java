@@ -1,6 +1,6 @@
 package com.example.notificationservice.API.util;
 
-import com.example.notificationservice.API.Email.Models.EmailDTO;
+import com.example.notificationservice.API.Email.Models.EmailAsyncModel;
 import com.example.notificationservice.API.Email.Models.EmailModel;
 import com.example.notificationservice.API.Models.FileModel;
 import org.springframework.stereotype.Component;
@@ -16,10 +16,10 @@ public class EmailModelValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        EmailDTO emailDTO = (EmailDTO) target;
+        EmailModel emailModel = (EmailModel) target;
 
-        if (emailDTO.getFiles() != null) {
-            for (FileModel fileModel: emailDTO.getFiles()) {
+        if (emailModel.getFiles() != null) {
+            for (FileModel fileModel: emailModel.getFiles()) {
                 if (!(fileModel.getName().endsWith(".txt") || fileModel.getName().endsWith(".docx") || fileModel.getName().endsWith(".jpg") || fileModel.getName().endsWith(".pptx"))) {
                     errors.rejectValue("files", "", "Укажите корректное наименование файла " + fileModel.getName());
                 }

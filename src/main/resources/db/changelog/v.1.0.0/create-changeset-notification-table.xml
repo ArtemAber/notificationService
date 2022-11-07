@@ -21,6 +21,10 @@
             </column>
             <column name="message" type="text">
             </column>
+            <column name="attempts" type="int">
+            </column>
+            <column name="planned_date" type="timestamp">
+            </column>
         </createTable>
     </changeSet>
 
