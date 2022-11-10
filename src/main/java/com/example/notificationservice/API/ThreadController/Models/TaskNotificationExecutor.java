@@ -2,7 +2,6 @@ package com.example.notificationservice.API.ThreadController.Models;
 
 import com.example.notificationservice.API.Models.NotificationModel;
 import com.example.notificationservice.API.Models.NotificationType;
-import com.example.notificationservice.API.Models.SuccessResultModel;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -18,7 +17,7 @@ public class TaskNotificationExecutor {
         taskRuns.forEach(strategy -> STRATEGY_MAP.put(strategy.getType(), strategy));
     }
 
-    public SuccessResultModel runTask(NotificationModel notificationModel) {
+    public NotificationResultModel runTask(NotificationModel notificationModel) {
         var strategy = STRATEGY_MAP.get(notificationModel.getType());
 
         if (strategy == null) {

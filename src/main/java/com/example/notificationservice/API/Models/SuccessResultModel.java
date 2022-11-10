@@ -8,8 +8,6 @@ public class SuccessResultModel {
 
     public SuccessResultModel() {
         this.success = true;
-        this.errorCode = "";
-        this.errorMessage = "";
     }
 
     public SuccessResultModel(String errorCode, String errorMessage) {

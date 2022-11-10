@@ -3,12 +3,13 @@ package com.example.notificationservice.API.ThreadController;
 import com.example.notificationservice.API.Hibernate.DAO.NotificationDAO;
 import com.example.notificationservice.API.Models.NotificationModel;
 import com.example.notificationservice.API.Models.StatusType;
-import com.example.notificationservice.API.Models.SuccessResultModel;
+import com.example.notificationservice.API.ThreadController.Models.NotificationResultModel;
 import com.example.notificationservice.API.ThreadController.Models.TaskNotificationExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 @Component
 public class FindTaskJob {
@@ -24,19 +25,16 @@ public class FindTaskJob {
     public void findTask() {
         if (notificationDAO.getUnfinishedTasks() != null) {
             for (NotificationModel notificationModel: notificationDAO.getUnfinishedTasks()) {
-                    updateTask(taskNotificationExecutor.runTask(notificationModel), notificationModel);
+
+                NotificationResultModel notificationResultModel = taskNotificationExecutor.runTask(notificationModel);
+
+                updateTask(notificationModel.getId(), notificationModel.getAttempts() + 1, notificationResultModel);
             }
         }
     }
 
-    private void updateTask(SuccessResultModel successResultModel, NotificationModel notificationModel) {
-        if (successResultModel.isSuccess()) {
-            notificationModel.setStatus(StatusType.FINISHED);
-        } else {
-            notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorMessage());
-        }
-        notificationDAO.updateNotificationEntity(notificationModel);
+    private void updateTask(UUID id, int attempts, NotificationResultModel notificationResultModel) {
+        notificationDAO.updateNotificationEntity(id, attempts, notificationResultModel);
     }
 }
 

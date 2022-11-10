@@ -37,6 +37,15 @@ public class EmailService {
     public GuidResultModel sendMail(EmailModel emailModel) {
         ObjectMapper objectMapper = mapperBuilder.build();
         SuccessResultModel successResultModel = new SuccessResultModel();
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setType(NotificationType.NOTIFICATION_EMAIL);
+        try {
+            notificationModel.setData(objectMapper.writeValueAsString(emailModel));
+        } catch (JsonProcessingException e) {
+            return new GuidResultModel("ERROR_PARSING_EMAIL_MODEL", "Не удалось распарсить объект");
+        }
+
         if (emailModel.getPictures() == null && emailModel.getFiles() == null) {
             successResultModel = this.sendSimpleMail(emailModel);
             // TODO: 03.11.2022 save
@@ -44,22 +53,14 @@ public class EmailService {
             successResultModel = this.sendMailWithAttachment(emailModel);
             // TODO: 03.11.2022 save
         }
-        NotificationModel notificationModel = new NotificationModel();
-        notificationModel.setType(NotificationType.NOTIFICATION_EMAIL);
-        try {
-            notificationModel.setData(objectMapper.writeValueAsString(emailModel));
-        } catch (JsonProcessingException e) {
-            successResultModel.setSuccess(false);
-            successResultModel.setErrorCode(successResultModel.getErrorCode() + "; ERROR_PARSING_EMAIL_MODEL");
-            successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; Не удалось распарсить объект");
-        }
+
         if (!successResultModel.isSuccess()) {
             notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorMessage());
+            notificationModel.setMessage(successResultModel.getErrorCode() + successResultModel.getErrorMessage());
         } else {
             notificationModel.setStatus(StatusType.FINISHED);
         }
-        return notificationDAO.saveNotification(notificationModel, successResultModel);
+        return notificationDAO.saveNotification(notificationModel);
     }
 
 
@@ -73,7 +74,6 @@ public class EmailService {
 
     public GuidResultModel sendAdAsync(EmailAsyncModel emailAsyncModel) {
         ObjectMapper objectMapper = mapperBuilder.build();
-        SuccessResultModel successResultModel = new SuccessResultModel();
 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.setType(NotificationType.NOTIFICATION_EMAIL);
@@ -81,14 +81,12 @@ public class EmailService {
         try {
             notificationModel.setData(objectMapper.writeValueAsString(emailAsyncModel));
         } catch (JsonProcessingException e) {
-            successResultModel.setSuccess(false);
-            successResultModel.setErrorCode("ERROR_PARSING_ASYNC_EMAIL_MODEL");
-            successResultModel.setErrorMessage("Не удалось распарсить объект");
+            return new GuidResultModel("ERROR_PARSING_ASYNC_EMAIL_MODEL", "Не удалось распарсить объект");
         }
         notificationModel.setStatus(StatusType.INIT);
         notificationModel.setAttempts(0);
 
-        return notificationDAO.saveNotification(notificationModel, successResultModel);
+        return notificationDAO.saveNotification(notificationModel);
     }
 
     public SuccessResultModel sendMailWithAttachment(EmailModel emailModel) {

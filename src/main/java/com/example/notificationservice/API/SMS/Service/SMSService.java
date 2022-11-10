@@ -34,7 +34,6 @@ public class SMSService {
 
     public GuidResultModel saveSMS(SMSModel smsModel) {
         ObjectMapper objectMapper = mapperBuilder.build();
-
         SuccessResultModel successResultModel = sendSMS(smsModel);
 
         NotificationModel notificationModel = new NotificationModel();
@@ -42,17 +41,16 @@ public class SMSService {
         try {
             notificationModel.setData(objectMapper.writeValueAsString(smsModel));
         } catch (JsonProcessingException e) {
-            successResultModel.setSuccess(false);
-            successResultModel.setErrorCode(successResultModel.getErrorCode() + "; ERROR_PARSING_SMS_MODEL");
-            successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; Не удалось распарсить объект");
+            return new GuidResultModel("ERROR_PARSING_SMS_MODEL", "Не удалось распарсить объект");
         }
+
         if (!successResultModel.isSuccess()) {
             notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorMessage());
+            notificationModel.setMessage(successResultModel.getErrorCode() + successResultModel.getErrorMessage());
         } else {
             notificationModel.setStatus(StatusType.FINISHED);
         }
-        return notificationDAO.saveNotification(notificationModel, successResultModel);
+        return notificationDAO.saveNotification(notificationModel);
     }
 
     public SuccessResultModel sendSMS(SMSModel smsModel) {
@@ -86,13 +84,11 @@ public class SMSService {
         try {
             notificationModel.setData(objectMapper.writeValueAsString(smsAsyncModel));
         } catch (JsonProcessingException e) {
-            successResultModel.setSuccess(false);
-            successResultModel.setErrorCode("ERROR_PARSING_ASYNC_SMS_MODEL");
-            successResultModel.setErrorMessage("Не удалось распарсить объект");
+            return new GuidResultModel("ERROR_PARSING_ASYNC_SMS_MODEL", "Не удалось распарсить объект");
         }
         notificationModel.setStatus(StatusType.INIT);
         notificationModel.setAttempts(0);
 
-        return notificationDAO.saveNotification(notificationModel, successResultModel);
+        return notificationDAO.saveNotification(notificationModel);
     }
 }

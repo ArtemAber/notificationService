@@ -25,7 +25,7 @@ public class SMSController {
     @PostMapping("/send")
     public GuidResultModel sendSMS(@RequestBody @Valid SMSModel smsModel, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new GuidResultModel(null, "DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
+            return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
             return smsService.saveSMS(smsModel);
         }
@@ -35,7 +35,7 @@ public class SMSController {
     public GuidResultModel sendSMSAsync(@RequestBody @Valid SMSAsyncModel smsAsyncModel, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return new GuidResultModel(null, "DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
+            return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
             return smsService.saveAsyncSMS(smsAsyncModel);
         }

@@ -14,8 +14,11 @@ public class GuidResultModel {
         this.id = id;
     }
 
-    public GuidResultModel(UUID id, String errorCode, String errorMessage) {
-        this.id = id;
+    public GuidResultModel(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public GuidResultModel(String errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

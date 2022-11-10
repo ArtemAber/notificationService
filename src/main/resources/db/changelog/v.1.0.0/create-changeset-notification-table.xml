@@ -6,22 +6,29 @@
     <changeSet id="create-table-notification" author="Artem-Sokolov">
         <createTable tableName="notification">
             <column name="id" type="uuid">
-                <constraints primaryKey="true"/>
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="type" type="varchar">
                 <constraints nullable="false"/>
             </column>
             <column name="data" type="text">
+                <constraints nullable="false"/>
             </column>
             <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
             </column>
             <column name="send_date" type="timestamp">
             </column>
             <column name="status" type="varchar(100)">
+                <constraints nullable="false"/>
             </column>
             <column name="message" type="text">
             </column>
             <column name="attempts" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parts" type="text">
+                <constraints nullable="false"/>
             </column>
             <column name="planned_date" type="timestamp">
             </column>

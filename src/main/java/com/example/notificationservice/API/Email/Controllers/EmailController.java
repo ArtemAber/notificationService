@@ -4,7 +4,6 @@ import com.example.notificationservice.API.Email.Models.EmailAsyncModel;
 import com.example.notificationservice.API.Email.Models.EmailModel;
 import com.example.notificationservice.API.Email.Service.EmailService;
 import com.example.notificationservice.API.Models.GuidResultModel;
-import com.example.notificationservice.API.Models.SuccessResultModel;
 import com.example.notificationservice.API.util.EmailModelValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -37,7 +36,7 @@ public class EmailController {
         this.emailModelValidator.validate(emailModel, bindingResult);
 
         if (bindingResult.hasErrors()) {
-             return new GuidResultModel(null, "DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
+             return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
                 return emailService.sendMail(emailModel);
         }
@@ -48,7 +47,7 @@ public class EmailController {
         this.emailModelValidator.validate(emailAsyncModel, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return new GuidResultModel(null, "DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
+            return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
             return emailService.sendAdAsync(emailAsyncModel);
         }

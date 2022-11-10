@@ -23,7 +23,7 @@ public class SMSNotificationStrategy implements TaskRun {
 
 
     @Override
-    public SuccessResultModel run(NotificationModel notificationModel) {
+    public NotificationResultModel run(NotificationModel notificationModel) {
 
         ObjectMapper objectMapper = mapperBuilder.build();
 
@@ -32,9 +32,15 @@ public class SMSNotificationStrategy implements TaskRun {
         try {
             smsModel = objectMapper.readValue(notificationModel.getData(), SMSModel.class);
         } catch (JsonProcessingException e) {
-            return new SuccessResultModel("ERROR_PARSING_SMS_MODEL", "Не удалось распарсить модель SMS");
+            return new NotificationResultModel("ERROR_PARSING_SMS_MODEL", "Не удалось распарсить модель SMS");
         }
-        return smsService.sendSMS(smsModel);
+        SuccessResultModel successResultModel = smsService.sendSMS(smsModel);
+
+        if (successResultModel.isSuccess()) {
+            return new NotificationResultModel();
+        } else {
+            return new NotificationResultModel(successResultModel.getErrorCode(), successResultModel.getErrorMessage());
+        }
     }
 
     @Override

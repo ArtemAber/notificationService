@@ -1,6 +1,5 @@
 package com.example.notificationservice.API.util;
 
-import com.example.notificationservice.API.Email.Models.EmailAsyncModel;
 import com.example.notificationservice.API.Email.Models.EmailModel;
 import com.example.notificationservice.API.Models.FileModel;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.example.notificationservice.API.Models;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class NotificationModel {
@@ -21,6 +21,8 @@ public class NotificationModel {
     private String message;
 
     private int attempts;
+
+    private PartsModel partsModel;
 
     private LocalDateTime plannedDate;
 
@@ -88,6 +90,14 @@ public class NotificationModel {
         this.attempts = attempts;
     }
 
+    public PartsModel getPartsModel() {
+        return partsModel;
+    }
+
+    public void setPartsModel(PartsModel partsModel) {
+        this.partsModel = partsModel;
+    }
+
     public LocalDateTime getPlannedDate() {
         return plannedDate;
     }
@@ -107,6 +117,7 @@ public class NotificationModel {
                 ", status=" + status +
                 ", message='" + message + '\'' +
                 ", attempts=" + attempts +
+                ", partsModel=" + partsModel +
                 ", plannedDate=" + plannedDate +
                 '}';
     }

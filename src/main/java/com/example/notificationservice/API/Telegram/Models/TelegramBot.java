@@ -75,84 +75,82 @@ public class TelegramBot extends TelegramLongPollingBot {
     public GuidResultModel sendMes(TelegramModel telegramModel) {
         this.recipient = telegramModel.getChatId();
         this.telegramModel = telegramModel;
-
         ObjectMapper objectMapper = mapperBuilder.build();
         SuccessResultModel successResultModel = new SuccessResultModel();
-        if (telegramModel != null) {
-            if (telegramModel.getMessage() != null) {
-                SuccessResultModel res = sendMessage(telegramModel);
-                if (!res.isSuccess()) {
-                    successResultModel.setSuccess(false);
-                    successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
-                    successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
-                }
-            }
-            if (telegramModel.getFiles() != null) {
-                SuccessResultModel res = sendMsgWithFiles(telegramModel);
-                if (!res.isSuccess()) {
-                    successResultModel.setSuccess(false);
-                    successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
-                    successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
-                }
-            }
-            if (telegramModel.getPictures() != null) {
-                SuccessResultModel res = sendPhoto(telegramModel);
-                if (!res.isSuccess()) {
-                    successResultModel.setSuccess(false);
-                    successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
-                    successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
-                }
-            }
-        }
 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.setType(NotificationType.NOTIFICATION_TELEGRAM);
         try {
             notificationModel.setData(objectMapper.writeValueAsString(telegramModel));
         } catch (JsonProcessingException e) {
-            successResultModel.setSuccess(false);
-            successResultModel.setErrorCode(successResultModel.getErrorCode() + "; ERROR_PARSING_TELEGRAM_MODEL");
-            successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; Не удалось распарсить объект");
+            return new GuidResultModel("ERROR_PARSING_TELEGRAM_MODEL", "Не удалось распарсить объект");
         }
-        if (!successResultModel.isSuccess()) {
-            notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorMessage());
-        } else {
-            notificationModel.setStatus(StatusType.FINISHED);
-        }
-        return notificationDAO.saveNotification(notificationModel, successResultModel);
-    }
 
-    public SuccessResultModel sendTelegramAsync(TelegramModel telegramModel) {
-        SuccessResultModel successResultModel = new SuccessResultModel();
         if (telegramModel != null) {
             if (telegramModel.getMessage() != null) {
                 SuccessResultModel res = sendMessage(telegramModel);
-                successResultModel.setSuccess(false);
-                successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
-                successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+                if (!res.isSuccess()) {
+                    successResultModel.setSuccess(false);
+                    successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
+                    successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+                }
             }
             if (telegramModel.getFiles() != null) {
                 SuccessResultModel res = sendMsgWithFiles(telegramModel);
-                successResultModel.setSuccess(false);
-                successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
-                successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+                if (!res.isSuccess()) {
+                    successResultModel.setSuccess(false);
+                    successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
+                    successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+                }
             }
             if (telegramModel.getPictures() != null) {
                 SuccessResultModel res = sendPhoto(telegramModel);
-                successResultModel.setSuccess(false);
-                successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
-                successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+                if (!res.isSuccess()) {
+                    successResultModel.setSuccess(false);
+                    successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
+                    successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+                }
             }
-        } else {
-            successResultModel = new SuccessResultModel("ERROR_SENDING_TELEGRAM", "Пустые данные");
         }
-        return successResultModel;
+
+        if (!successResultModel.isSuccess()) {
+            notificationModel.setStatus(StatusType.FAILED);
+            notificationModel.setMessage(successResultModel.getErrorCode() + successResultModel.getErrorMessage());
+        } else {
+            notificationModel.setStatus(StatusType.FINISHED);
+        }
+        return notificationDAO.saveNotification(notificationModel);
     }
+
+//    public SuccessResultModel sendTelegramAsync(TelegramModel telegramModel, String message) {
+//        SuccessResultModel successResultModel = new SuccessResultModel();
+//        if (telegramModel != null) {
+//            if (telegramModel.getMessage() != null && message.contains("текстовое")) {
+//                SuccessResultModel res = sendMessage(telegramModel);
+//                successResultModel.setSuccess(res.isSuccess());
+//                successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
+//                successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+//            }
+//            if (telegramModel.getFiles() != null && message.contains("файл")) {
+//                SuccessResultModel res = sendMsgWithFiles(telegramModel);
+//                successResultModel.setSuccess(res.isSuccess());
+//                successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
+//                successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+//            }
+//            if (telegramModel.getPictures() != null && message.contains("картинк")) {
+//                SuccessResultModel res = sendPhoto(telegramModel);
+//                successResultModel.setSuccess(res.isSuccess());
+//                successResultModel.setErrorCode(successResultModel.getErrorCode() + "; " + res.getErrorCode());
+//                successResultModel.setErrorMessage(successResultModel.getErrorMessage() + "; " + res.getErrorMessage());
+//            }
+//        } else {
+//            successResultModel = new SuccessResultModel("ERROR_SENDING_TELEGRAM", "Пустые данные");
+//        }
+//        return successResultModel;
+//    }
 
     public GuidResultModel saveAsyncMes(TelegramAsyncModel telegramAsyncModel) {
         ObjectMapper objectMapper = mapperBuilder.build();
-        SuccessResultModel successResultModel = new SuccessResultModel();
 
         NotificationModel notificationModel = new NotificationModel();
         notificationModel.setType(NotificationType.NOTIFICATION_TELEGRAM);
@@ -160,17 +158,26 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             notificationModel.setData(objectMapper.writeValueAsString(telegramAsyncModel));
         } catch (JsonProcessingException e) {
-            successResultModel.setSuccess(false);
-            successResultModel.setErrorCode("ERROR_PARSING_ASYNC_TELEGRAM_MODEL");
-            successResultModel.setErrorMessage("Не удалось распарсить объект");
+            return new GuidResultModel("ERROR_PARSING_ASYNC_TELEGRAM_MODEL", "Не удалось распарсить объект");
         }
         notificationModel.setStatus(StatusType.INIT);
         notificationModel.setAttempts(0);
+        notificationModel.setPartsModel(new PartsModel());
 
-        return notificationDAO.saveNotification(notificationModel, successResultModel);
+        if (telegramAsyncModel.getMessage() != null) {
+            notificationModel.getPartsModel().setSendMessage(false);
+        }
+        if (telegramAsyncModel.getFiles() != null) {
+            notificationModel.getPartsModel().setSendFiles(false);
+        }
+        if (telegramAsyncModel.getPictures() != null) {
+            notificationModel.getPartsModel().setSendPictures(false);
+        }
+
+        return notificationDAO.saveNotification(notificationModel);
     }
 
-    private SuccessResultModel sendMessage(TelegramModel telegramModel) {
+    public SuccessResultModel sendMessage(TelegramModel telegramModel) {
         SendMessage sendMessage = new SendMessage();
 
         sendMessage.setChatId(telegramModel.getChatId());
@@ -184,15 +191,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private SuccessResultModel sendMsgWithFiles(TelegramModel telegramModel) {
+    public SuccessResultModel sendMsgWithFiles(TelegramModel telegramModel) {
         SendDocument sendDocument = new SendDocument();
         sendDocument.setChatId(telegramModel.getChatId());
 
         for (FileModel fileModel : telegramModel.getFiles()) {
-            sendDocument.setDocument(new InputFile(getFile(fileModel)));
             try {
+                sendDocument.setDocument(new InputFile(getFile(fileModel)));
                 execute(sendDocument);
-            } catch (TelegramApiException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return new SuccessResultModel("ERROR_SENDING_TELEGRAM", "Не удалось отправить файлы в телеграм");
             }
@@ -200,17 +207,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         return new SuccessResultModel();
     }
 
-    public File getFile(FileModel fileModel) {
+    public File getFile(FileModel fileModel) throws Exception {
 
         FileOutputStream fos;
         File file = new File(fileModel.getName());
-        try {
-            fos = new FileOutputStream(file);
-            fos.write(new String(Base64.getDecoder().decode(fileModel.getData())).getBytes());
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        fos = new FileOutputStream(file);
+        fos.write(new String(Base64.getDecoder().decode(fileModel.getData())).getBytes());
+        fos.close();
         return file;
     }
 

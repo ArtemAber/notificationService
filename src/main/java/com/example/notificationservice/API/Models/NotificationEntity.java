@@ -2,7 +2,7 @@ package com.example.notificationservice.API.Models;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +35,9 @@ public class NotificationEntity {
 
     @Column(name = "attempts")
     private int attempts;
+
+    @Column(name = "parts")
+    private String partsModel;
 
     @Column(name = "planned_date")
     private LocalDateTime plannedDate;
@@ -113,6 +116,14 @@ public class NotificationEntity {
         this.attempts = attempts;
     }
 
+    public String getPartsModel() {
+        return partsModel;
+    }
+
+    public void setPartsModel(String partsModel) {
+        this.partsModel = partsModel;
+    }
+
     public LocalDateTime getPlannedDate() {
         return plannedDate;
     }
@@ -132,6 +143,7 @@ public class NotificationEntity {
                 ", status=" + status +
                 ", message='" + message + '\'' +
                 ", attempts=" + attempts +
+                ", partsModel='" + partsModel + '\'' +
                 ", plannedDate=" + plannedDate +
                 '}';
     }

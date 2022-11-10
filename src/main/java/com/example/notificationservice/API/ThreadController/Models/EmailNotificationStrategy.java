@@ -23,7 +23,7 @@ public class EmailNotificationStrategy implements TaskRun {
 
 
     @Override
-    public SuccessResultModel run(NotificationModel notificationModel) {
+    public NotificationResultModel run(NotificationModel notificationModel) {
 
         ObjectMapper objectMapper = mapperBuilder.build();
 
@@ -32,9 +32,15 @@ public class EmailNotificationStrategy implements TaskRun {
         try {
             model = objectMapper.readValue(notificationModel.getData(), EmailModel.class);
         } catch (JsonProcessingException e) {
-             return new SuccessResultModel("ERROR_PARSING_EMAIL_MODEL", "Не удалось распарсить модель EMAIL");
+             return new NotificationResultModel("ERROR_PARSING_EMAIL_MODEL", "Не удалось распарсить модель EMAIL");
         }
-        return emailService.sendMailAsync(model);
+        SuccessResultModel successResultModel = emailService.sendMailAsync(model);
+
+        if (successResultModel.isSuccess()) {
+            return new NotificationResultModel();
+        } else {
+            return new NotificationResultModel(successResultModel.getErrorCode(), successResultModel.getErrorMessage());
+        }
     }
 
     @Override
