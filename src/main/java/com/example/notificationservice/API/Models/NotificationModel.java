@@ -1,7 +1,6 @@
 package com.example.notificationservice.API.Models;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 public class NotificationModel {
@@ -22,7 +21,7 @@ public class NotificationModel {
 
     private int attempts;
 
-    private PartsModel partsModel;
+    private String parts;
 
     private LocalDateTime plannedDate;
 
@@ -90,12 +89,12 @@ public class NotificationModel {
         this.attempts = attempts;
     }
 
-    public PartsModel getPartsModel() {
-        return partsModel;
+    public String getParts() {
+        return parts;
     }
 
-    public void setPartsModel(PartsModel partsModel) {
-        this.partsModel = partsModel;
+    public void setParts(String parts) {
+        this.parts = parts;
     }
 
     public LocalDateTime getPlannedDate() {
@@ -117,7 +116,7 @@ public class NotificationModel {
                 ", status=" + status +
                 ", message='" + message + '\'' +
                 ", attempts=" + attempts +
-                ", partsModel=" + partsModel +
+                ", partsModel=" + parts +
                 ", plannedDate=" + plannedDate +
                 '}';
     }

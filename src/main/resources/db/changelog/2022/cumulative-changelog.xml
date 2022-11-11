@@ -4,9 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
     <changeSet id="add-tag-1.0.0" author="Artem-Sokolov">
-        <tagDatabase tag="v.1.0.0"/>
+        <tagDatabase tag="2022"/>
     </changeSet>
 
-    <include file="create-changeset-notification-table.xml" relativeToChangelogFile="true"/>
+    <include file="20221110-create-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

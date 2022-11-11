@@ -32,6 +32,8 @@
             </column>
             <column name="planned_date" type="timestamp">
             </column>
+            <column name="service_name" type="varchar(100)">
+            </column>
         </createTable>
     </changeSet>
 

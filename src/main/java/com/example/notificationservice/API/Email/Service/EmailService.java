@@ -48,15 +48,12 @@ public class EmailService {
 
         if (emailModel.getPictures() == null && emailModel.getFiles() == null) {
             successResultModel = this.sendSimpleMail(emailModel);
-            // TODO: 03.11.2022 save
         } else {
             successResultModel = this.sendMailWithAttachment(emailModel);
-            // TODO: 03.11.2022 save
         }
 
         if (!successResultModel.isSuccess()) {
-            notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorCode() + successResultModel.getErrorMessage());
+            return new GuidResultModel("ERROR_SENDING_MAIL", "Не удалось отправить письмо");
         } else {
             notificationModel.setStatus(StatusType.FINISHED);
         }

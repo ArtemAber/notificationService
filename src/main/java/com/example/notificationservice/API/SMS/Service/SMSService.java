@@ -45,8 +45,7 @@ public class SMSService {
         }
 
         if (!successResultModel.isSuccess()) {
-            notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorCode() + successResultModel.getErrorMessage());
+            return new GuidResultModel("ERROR_SENDING_SMS", "Не удалось отправить смс");
         } else {
             notificationModel.setStatus(StatusType.FINISHED);
         }

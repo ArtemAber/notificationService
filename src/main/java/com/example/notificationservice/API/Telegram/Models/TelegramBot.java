@@ -114,8 +114,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         if (!successResultModel.isSuccess()) {
-            notificationModel.setStatus(StatusType.FAILED);
-            notificationModel.setMessage(successResultModel.getErrorCode() + successResultModel.getErrorMessage());
+            return new GuidResultModel("ERROR_SENDING_TELEGRAM", "Не удалось отправить телеграм");
         } else {
             notificationModel.setStatus(StatusType.FINISHED);
         }
@@ -162,16 +161,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         notificationModel.setStatus(StatusType.INIT);
         notificationModel.setAttempts(0);
-        notificationModel.setPartsModel(new PartsModel());
+        PartsModel partsModel = new PartsModel();
 
         if (telegramAsyncModel.getMessage() != null) {
-            notificationModel.getPartsModel().setSendMessage(false);
+            partsModel.setSendMessage(false);
         }
         if (telegramAsyncModel.getFiles() != null) {
-            notificationModel.getPartsModel().setSendFiles(false);
+            partsModel.setSendFiles(false);
         }
         if (telegramAsyncModel.getPictures() != null) {
-            notificationModel.getPartsModel().setSendPictures(false);
+            partsModel.setSendPictures(false);
+        }
+        try {
+            notificationModel.setParts(objectMapper.writeValueAsString(partsModel));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return notificationDAO.saveNotification(notificationModel);

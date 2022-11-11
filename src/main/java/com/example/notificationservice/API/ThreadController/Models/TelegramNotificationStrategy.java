@@ -1,10 +1,7 @@
 package com.example.notificationservice.API.ThreadController.Models;
 
 import com.example.notificationservice.API.Hibernate.DAO.NotificationDAO;
-import com.example.notificationservice.API.Models.GuidResultModel;
-import com.example.notificationservice.API.Models.NotificationModel;
-import com.example.notificationservice.API.Models.NotificationType;
-import com.example.notificationservice.API.Models.SuccessResultModel;
+import com.example.notificationservice.API.Models.*;
 import com.example.notificationservice.API.Telegram.Models.TelegramBot;
 import com.example.notificationservice.API.Telegram.Models.TelegramModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +28,7 @@ public class TelegramNotificationStrategy implements TaskRun {
 
         ObjectMapper objectMapper = mapperBuilder.build();
         TelegramModel telegramModel;
+        PartsModel partsModel;
         SuccessResultModel finalResult = new SuccessResultModel();
 
         try {
@@ -38,9 +36,14 @@ public class TelegramNotificationStrategy implements TaskRun {
         } catch (JsonProcessingException e) {
             return new NotificationResultModel("ERROR_PARSING_TELEGRAM_MODEL", "Не удалость распарсить модель TELEGRAM");
         }
+        try {
+            partsModel = objectMapper.readValue(notificationModel.getParts(), PartsModel.class);
+        } catch (JsonProcessingException e) {
+            return new NotificationResultModel("ERROR_PARSING_PARTS", "Не удалость распарсить модель PARTS");
+        }
 
 
-        if (notificationModel.getPartsModel().isSendMessage() != null && !notificationModel.getPartsModel().isSendMessage()){
+        if (Boolean.FALSE.equals(partsModel.isSendMessage())){
             SuccessResultModel result = telegramBot.sendMessage(telegramModel);
             if (result.isSuccess()) {
                 notificationDAO.successfulSendingMessage(notificationModel.getId());
@@ -50,7 +53,7 @@ public class TelegramNotificationStrategy implements TaskRun {
                 finalResult.setErrorMessage(finalResult.getErrorMessage() + result.getErrorMessage());
             }
         }
-        if (notificationModel.getPartsModel().isSendFiles() != null && !notificationModel.getPartsModel().isSendFiles()){
+        if (Boolean.FALSE.equals(partsModel.isSendFiles())){
             SuccessResultModel result = telegramBot.sendMsgWithFiles(telegramModel);
             if (result.isSuccess()) {
                 notificationDAO.successfulSendingFiles(notificationModel.getId());
@@ -60,7 +63,7 @@ public class TelegramNotificationStrategy implements TaskRun {
                 finalResult.setErrorMessage(finalResult.getErrorMessage() + result.getErrorMessage());
             }
         }
-        if (notificationModel.getPartsModel().isSendPictures() != null && !notificationModel.getPartsModel().isSendPictures()){
+        if (Boolean.FALSE.equals(partsModel.isSendPictures())){
             SuccessResultModel result = telegramBot.sendPhoto(telegramModel);
             if (result.isSuccess()) {
                 notificationDAO.successfulSendingPicture(notificationModel.getId());

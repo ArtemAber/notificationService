@@ -27,30 +27,22 @@ public class NotificationDAO {
     private Jackson2ObjectMapperBuilder mapperBuilder;
 
     @Transactional
-    public List<NotificationModel> getUnfinishedTasks() {
+    public List<NotificationModel> getUnfinishedTasks(String serviceName) {
         ObjectMapper objectMapper = mapperBuilder.build();
+        Session session = sessionFactory.getCurrentSession();
+
+        session.createQuery("update NotificationEntity N set N.serviceName =:serviceName where (N.status = com.example.notificationservice.API.Models.StatusType.INIT or " +
+                            "N.status = com.example.notificationservice.API.Models.StatusType.FAILED) and N.attempts < 5 " +
+                            "and N.plannedDate < current_timestamp and N.serviceName = null").setParameter("serviceName", serviceName).executeUpdate();
+
         List<NotificationEntity> entityList = sessionFactory.getCurrentSession().createQuery("select N from NotificationEntity N WHERE " +
-                                                            "N.status <> com.example.notificationservice.API.Models.StatusType.FINISHED " +
+                                                            "(N.status = com.example.notificationservice.API.Models.StatusType.INIT or N.status = com.example.notificationservice.API.Models.StatusType.FAILED) " +
                                                             "and N.attempts < 5 " +
-                                                            "and N.plannedDate < current_timestamp", NotificationEntity.class).getResultList();
+                                                            "and N.plannedDate < current_timestamp " +
+                                                            "and N.serviceName = :serviceName", NotificationEntity.class).setParameter("serviceName", serviceName).getResultList();
         List<NotificationModel> notificationModelList = new ArrayList<>();
         for (NotificationEntity notificationEntity: entityList) {
-            NotificationModel notificationModel = new NotificationModel();
-            notificationModel.setId(notificationEntity.getId());
-            notificationModel.setType(notificationEntity.getType());
-            notificationModel.setData(notificationEntity.getData());
-            notificationModel.setCreatedAt(notificationEntity.getCreatedAt());
-            notificationModel.setLastUpdate(notificationEntity.getLastUpdate());
-            notificationModel.setStatus(notificationEntity.getStatus());
-            notificationModel.setMessage(notificationEntity.getMessage());
-            notificationModel.setAttempts(notificationEntity.getAttempts());
-            notificationModel.setPlannedDate(notificationEntity.getPlannedDate());
-            try {
-                notificationModel.setPartsModel(objectMapper.readValue(notificationEntity.getPartsModel(), PartsModel.class));
-            } catch (Exception e) {
-            }
-
-            notificationModelList.add(notificationModel);
+            notificationModelList.add(objectMapper.convertValue(notificationEntity, NotificationModel.class));
         }
         return notificationModelList;
     }
@@ -69,11 +61,7 @@ public class NotificationDAO {
         entity.setMessage(addModel.getMessage());
         entity.setAttempts(addModel.getAttempts());
         entity.setPlannedDate(addModel.getPlannedDate());
-        try {
-            entity.setPartsModel(objectMapper.writeValueAsString(addModel.getPartsModel()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        entity.setParts(addModel.getParts());
 
 
         try {
@@ -92,7 +80,7 @@ public class NotificationDAO {
     public void updateNotificationEntity(UUID id, int attempts, NotificationResultModel notificationResultModel) {
 
         sessionFactory.getCurrentSession().createQuery("update NotificationEntity t set t.lastUpdate =:last, t.status =:status, t.message =:message, " +
-                "t.attempts =:attempts where t.id = :id")
+                "t.attempts =:attempts, t.serviceName = null where t.id = :id")
                 .setParameter("last", LocalDateTime.now())
                 .setParameter("status", notificationResultModel.getStatusType())
                 .setParameter("message", notificationResultModel.getErrorMessage())
@@ -112,11 +100,11 @@ public class NotificationDAO {
 
         PartsModel partsModel;
         try {
-            partsModel = objectMapper.readValue(notificationEntity.getPartsModel(), PartsModel.class);
+            partsModel = objectMapper.readValue(notificationEntity.getParts(), PartsModel.class);
             partsModel.setSendMessage(true);
             String s = objectMapper.writeValueAsString(partsModel);
 
-            session.createQuery("update NotificationEntity t set t.partsModel=:partsModel where t.id=:id").setParameter("partsModel", s).setParameter("id", id).executeUpdate();
+            session.createQuery("update NotificationEntity t set t.parts =:partsModel where t.id=:id").setParameter("partsModel", s).setParameter("id", id).executeUpdate();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -132,11 +120,11 @@ public class NotificationDAO {
 
         PartsModel partsModel;
         try {
-            partsModel = objectMapper.readValue(notificationEntity.getPartsModel(), PartsModel.class);
+            partsModel = objectMapper.readValue(notificationEntity.getParts(), PartsModel.class);
             partsModel.setSendFiles(true);
             String s = objectMapper.writeValueAsString(partsModel);
 
-            session.createQuery("update NotificationEntity t set t.partsModel=:partsModel where t.id=:id").setParameter("partsModel", s).setParameter("id", id).executeUpdate();
+            session.createQuery("update NotificationEntity t set t.parts =:partsModel where t.id=:id").setParameter("partsModel", s).setParameter("id", id).executeUpdate();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -152,13 +140,18 @@ public class NotificationDAO {
 
         PartsModel partsModel;
         try {
-            partsModel = objectMapper.readValue(notificationEntity.getPartsModel(), PartsModel.class);
+            partsModel = objectMapper.readValue(notificationEntity.getParts(), PartsModel.class);
             partsModel.setSendPictures(true);
             String s = objectMapper.writeValueAsString(partsModel);
 
-            session.createQuery("update NotificationEntity t set t.partsModel=:partsModel where t.id=:id").setParameter("partsModel", s).setParameter("id", id).executeUpdate();
+            session.createQuery("update NotificationEntity t set t.parts =:partsModel where t.id=:id").setParameter("partsModel", s).setParameter("id", id).executeUpdate();
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    @Transactional
+    public void updateStatus(UUID id, StatusType type) {
+        sessionFactory.getCurrentSession().createQuery("update NotificationEntity t set t.status =:status where t.id =:id").setParameter("status", type).setParameter("id", id).executeUpdate();
     }
 }

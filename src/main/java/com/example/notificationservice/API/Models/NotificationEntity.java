@@ -2,7 +2,6 @@ package com.example.notificationservice.API.Models;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -37,10 +36,13 @@ public class NotificationEntity {
     private int attempts;
 
     @Column(name = "parts")
-    private String partsModel;
+    private String parts;
 
     @Column(name = "planned_date")
     private LocalDateTime plannedDate;
+
+    @Column(name = "service_name")
+    private String serviceName;
 
     public NotificationEntity() {
     }
@@ -116,12 +118,12 @@ public class NotificationEntity {
         this.attempts = attempts;
     }
 
-    public String getPartsModel() {
-        return partsModel;
+    public String getParts() {
+        return parts;
     }
 
-    public void setPartsModel(String partsModel) {
-        this.partsModel = partsModel;
+    public void setParts(String partsModel) {
+        this.parts = partsModel;
     }
 
     public LocalDateTime getPlannedDate() {
@@ -130,6 +132,14 @@ public class NotificationEntity {
 
     public void setPlannedDate(LocalDateTime plannedDate) {
         this.plannedDate = plannedDate;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     @Override
@@ -143,7 +153,7 @@ public class NotificationEntity {
                 ", status=" + status +
                 ", message='" + message + '\'' +
                 ", attempts=" + attempts +
-                ", partsModel='" + partsModel + '\'' +
+                ", partsModel='" + parts + '\'' +
                 ", plannedDate=" + plannedDate +
                 '}';
     }
