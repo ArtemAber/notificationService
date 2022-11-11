@@ -33,6 +33,7 @@
             <column name="planned_date" type="timestamp">
             </column>
             <column name="service_name" type="varchar(100)">
+                <constraints unique="true"/>
             </column>
         </createTable>
     </changeSet>
