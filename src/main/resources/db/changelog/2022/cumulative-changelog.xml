@@ -8,5 +8,6 @@
     </changeSet>
 
     <include file="20221110-create-table.xml" relativeToChangelogFile="true"/>
+    <include file="20221411-create-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
