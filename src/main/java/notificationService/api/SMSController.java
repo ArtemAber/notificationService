@@ -5,11 +5,9 @@ import notificationService.domain.sms.SMSAsyncModel;
 import notificationService.domain.sms.SMSModel;
 import notificationService.domainservice.SMSService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import notificationService.domainservice.SecurityService;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -22,8 +20,14 @@ public class SMSController {
     @Inject
     private SMSService smsService;
 
+    @Inject
+    private SecurityService securityService;
+
     @PostMapping("/send")
-    public GuidResultModel sendSMS(@RequestBody @Valid SMSModel smsModel, BindingResult bindingResult) {
+    public GuidResultModel sendSMS(@RequestHeader("token") String token, @RequestBody @Valid SMSModel smsModel, BindingResult bindingResult) {
+        if (!securityService.checkToken(token)) {
+            return new GuidResultModel("У вас нет доступа");
+        }
         if (bindingResult.hasErrors()) {
             return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {
@@ -32,8 +36,10 @@ public class SMSController {
     }
 
     @PostMapping("/sendAsyncSMS")
-    public GuidResultModel sendSMSAsync(@RequestBody @Valid SMSAsyncModel smsAsyncModel, BindingResult bindingResult) {
-
+    public GuidResultModel sendSMSAsync(@RequestHeader("token") String token, @RequestBody @Valid SMSAsyncModel smsAsyncModel, BindingResult bindingResult) {
+        if (!securityService.checkToken(token)) {
+            return new GuidResultModel("У вас нет доступа");
+        }
         if (bindingResult.hasErrors()) {
             return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         } else {

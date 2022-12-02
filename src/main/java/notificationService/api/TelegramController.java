@@ -4,15 +4,14 @@ import notificationService.domain.answers.GuidResultModel;
 import notificationService.domain.telegram.TelegramAsyncModel;
 import notificationService.domainservice.TelegramBot;
 import notificationService.domain.telegram.TelegramModel;
+import notificationService.domainservice.SecurityService;
 import notificationService.infrastructure.validators.TelegramModelValidator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/telegram")
@@ -25,11 +24,16 @@ public class TelegramController {
     @Inject
     private TelegramModelValidator telegramModelValidator;
 
+    @Inject
+    private SecurityService securityService;
+
 
     @PostMapping("/sendMessage")
-    public GuidResultModel sendMessage(@RequestBody TelegramModel telegramModel, BindingResult bindingResult) {
+    public GuidResultModel sendMessage(@RequestHeader("token") String token, @RequestBody TelegramModel telegramModel, Principal principal, BindingResult bindingResult) {
         telegramModelValidator.validate(telegramModel, bindingResult);
-
+        if (!securityService.checkToken(token)) {
+            return new GuidResultModel("У вас нет доступа");
+        }
         if (bindingResult.hasErrors()) {
             return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         }
@@ -37,9 +41,12 @@ public class TelegramController {
     }
 
     @PostMapping("/sendAsyncMessage")
-    public GuidResultModel sendAsyncMessage(@RequestBody TelegramAsyncModel telegramAsyncModel, BindingResult bindingResult) {
+    public GuidResultModel sendAsyncMessage(@RequestHeader("token") String token, @RequestBody TelegramAsyncModel telegramAsyncModel, BindingResult bindingResult) {
         telegramModelValidator.validate(telegramAsyncModel, bindingResult);
 
+        if (!securityService.checkToken(token)) {
+            return new GuidResultModel("У вас нет доступа");
+        }
         if (bindingResult.hasErrors()) {
             return new GuidResultModel("DATA_ERRORS", bindingResult.getAllErrors().stream().findAny().get().getDefaultMessage());
         }

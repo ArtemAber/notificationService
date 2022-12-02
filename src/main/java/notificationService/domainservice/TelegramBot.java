@@ -30,10 +30,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Base64;
 
 
@@ -45,9 +41,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Value("${bot.token}")
     private String botToken;
-
-    @Value("${spring.uri.file.telegram}")
-    private String uriFileTelegram;
 
     private String recipient;
 
